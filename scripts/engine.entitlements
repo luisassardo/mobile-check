@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- The engine is a PyInstaller onefile: it unpacks an embedded Python
+       framework (signed by python.org, a different Team ID) and dlopens it.
+       Under hardened runtime that requires disabling library validation. -->
+  <key>com.apple.security.cs.disable-library-validation</key>
+  <true/>
+  <!-- CPython / some C-extensions allocate executable memory. -->
+  <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+  <true/>
+</dict>
+</plist>

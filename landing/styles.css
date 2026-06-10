@@ -1,0 +1,67 @@
+/* MobileCheck landing — tool overrides on node.css (ARGUS). C-LAB cyan accent. */
+
+:root{
+  --accent:      oklch(0.83 0.13 178);
+  --accent-2:    oklch(0.88 0.10 178);
+  --accent-h:    178;
+  --accent-glow: oklch(0.83 0.13 178 / 0.30);
+  --accent-soft: oklch(0.83 0.13 178 / 0.14);
+}
+
+/* node.css lays main out as a 2-column hero (text + a right-side visual).
+   MobileCheck has no right-side graphic, so use a single centered column and
+   center the hero so it doesn't look lopsided. */
+main { grid-template-columns: 1fr; max-width: 940px; margin-inline: auto; align-items: start; }
+.identity { text-align: center; }
+/* .identity is a flex column with align-items:flex-start, so shrink-width items
+   (eyebrow) and max-width blocks (title, desc) pin left even with centered text.
+   Center them as flex items. */
+.identity .eyebrow { align-self: center; }
+.identity .title { margin-inline: auto; }
+.identity .desc { margin-inline: auto; }
+.identity .cta-row { justify-content: center; }
+.identity .verify { justify-content: center; }
+/* keep card / list copy left-aligned for readability */
+.features, .feature, .honesty, .hcol, ul.list li { text-align: left; }
+
+/* six feature cards as a 3-column grid */
+.features { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 1100px) { .features { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px)  { .features { grid-template-columns: 1fr; } }
+
+/* honesty: what it finds / what it is not */
+.honesty{
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+  width:100%; max-width:920px; margin:clamp(28px,5vw,48px) auto 0;
+}
+@media (max-width: 720px){ .honesty{ grid-template-columns:1fr; } }
+.hcol{ border:1px solid var(--line); border-radius:10px; background:var(--bg-2); padding:20px 22px; }
+.hcol h3{
+  font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+  margin:0 0 12px; padding-bottom:10px; border-bottom:1px solid var(--line-soft);
+}
+.hcol-yes h3{ color:var(--accent); }
+.hcol-no  h3{ color:oklch(0.76 0.13 48); }
+
+ul.list{ margin:0; padding:0; list-style:none; display:grid; gap:11px; }
+ul.list li{ display:flex; gap:11px; font-size:14px; line-height:1.5; color:var(--fg-2); text-align:left; }
+ul.list li::before{ content:"▸"; color:var(--accent); flex:0 0 auto; }
+.hcol-no ul.list li::before{ content:"·"; color:oklch(0.76 0.13 48); }
+
+/* verify note */
+.verify{
+  display:inline-flex; align-items:center; gap:10px; margin-top:clamp(24px,4vw,40px);
+  font-size:12px; letter-spacing:.04em; color:var(--mid);
+}
+.verify svg{ width:16px; height:16px; color:var(--accent); }
+
+/* footer */
+.foot{
+  display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap;
+  padding:28px 20px; border-top:1px solid var(--line-soft); color:var(--mid);
+  font-family:"IBM Plex Mono",monospace; font-size:12px;
+}
+.foot .brand{ color:var(--fg-2); display:inline-flex; align-items:center; gap:8px; }
+.foot .brand .mark{ width:15px; height:15px; color:var(--accent); }
+.foot a{ color:var(--accent); text-decoration:none; }
+.foot .sep{ opacity:.5; }

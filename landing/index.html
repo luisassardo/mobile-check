@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<title>MobileCheck · security self-assessment for your computer · C-LAB</title>
+<meta name="description" content="A read-only security self-assessment for your Mac or Windows PC. Runs 100% on your device, shows what to fix first in plain language, keeps an encrypted history. A C-LAB tool inside the ARGUS Defense Network.">
+<meta name="theme-color" content="#0b0f12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0f12'/%3E%3Cg fill='none' stroke='%235be3c3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6.5' y='7' width='19' height='12.5' rx='2'/%3E%3Cpath d='M10.5%2013.2%2013.2%2015.8%2019%209.4'/%3E%3Cpath d='M16%2019.5V22.4M12%2022.6H20'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="node.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-node="mobilecheck">
+
+<div class="bg" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-scan"></div>
+  <div class="bg-motes"></div>
+  <div class="bg-sweep"></div>
+</div>
+
+<span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br brr"></span>
+
+<header class="rail">
+  <div class="group">
+    <span class="brand"><span class="mark" data-ico="shield"></span> ARGUS</span>
+    <span class="crumb hide-narrow"><span class="sep">/</span> <a href="https://c-lab.tools/" rel="noopener">C-LAB</a> <span class="sep">/</span> <span class="sig">COMPUTERCHECK</span></span>
+  </div>
+  <div class="group">
+    <span class="hide-narrow">READ-ONLY · LOCAL</span>
+    <span class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="es">ES</button>
+      <button type="button" data-lang="en" class="active">EN</button>
+    </span>
+    <span><span id="clock">--:--:--</span> UTC</span>
+    <span class="status-pill"><span class="live-dot"></span> LIVE</span>
+  </div>
+</header>
+
+<main>
+  <section class="identity">
+    <p class="eyebrow"><span class="ln"></span><span data-ico="shield"></span> <span data-i18n="eyebrow">C-LAB · Tool · device self-assessment</span></p>
+    <h1 class="wordmark product"><span data-decode>Mobile</span><span class="accent" data-decode>Check</span></h1>
+    <p class="role" data-i18n="role">Read-only · local · open source</p>
+    <h2 class="title" data-i18n="hero_title">Check your phone's security.</h2>
+    <p class="desc" data-i18n="hero_lead">Download MobileCheck to your computer, plug your phone in with a USB cable, and run a read-only scan: spyware indicators, stalkerware, risky settings. On iPhone it uses Amnesty's MVT against Citizen Lab and Amnesty indicators. Everything runs on your computer; nothing is sent unless you choose to.</p>
+
+    <div class="cta-row">
+      <a class="btn primary" href="https://github.com/luisassardo/mobile-check/releases/latest/download/MobileCheck-macOS.dmg" rel="noopener"><span data-ico="apple"></span> <span data-i18n="cta_mac">Download for macOS</span></a>
+      <a class="btn ghost" href="https://github.com/luisassardo/mobile-check/releases/latest/download/MobileCheck-Windows-Setup.exe" rel="noopener"><span data-ico="download"></span> <span data-i18n="cta_win">Download for Windows</span></a>
+      <a class="btn bare" href="https://github.com/luisassardo/mobile-check" rel="noopener"><span data-ico="github"></span> GitHub</a>
+    </div>
+    <p class="cta-note"><span data-i18n="hero_note">macOS Intel + Apple Silicon, notarized by Apple · Windows 10/11 · free &amp; open source · </span><a href="https://github.com/luisassardo/mobile-check/releases/latest" rel="noopener" data-i18n="all_downloads">all downloads &amp; checksums</a></p>
+
+    <div class="features">
+      <div class="feature"><span class="fnum mono">01</span><span class="fi" data-ico="fingerprint"></span><h3 data-i18n="f1_t">Read-only</h3><p data-i18n="f1_d">It observes and reports. It never changes your settings or touches your files.</p></div>
+      <div class="feature"><span class="fnum mono">02</span><span class="fi" data-ico="cloudOff"></span><h3 data-i18n="f2_t">Local &amp; private</h3><p data-i18n="f2_d">The scan runs on your device. No account, no upload, no telemetry.</p></div>
+      <div class="feature"><span class="fnum mono">03</span><span class="fi" data-ico="document"></span><h3 data-i18n="f3_t">Plain-language report</h3><p data-i18n="f3_d">A health score and the top things to fix first, each with clear steps.</p></div>
+      <div class="feature"><span class="fnum mono">04</span><span class="fi" data-ico="activity"></span><h3 data-i18n="f4_t">Track your progress</h3><p data-i18n="f4_d">An encrypted local history shows whether your security is improving over time.</p></div>
+      <div class="feature"><span class="fnum mono">05</span><span class="fi" data-ico="globe"></span><h3 data-i18n="f5_t">Reports in EN / ES / DE</h3><p data-i18n="f5_d">Download a printable PDF report in English, Spanish, or German.</p></div>
+      <div class="feature"><span class="fnum mono">06</span><span class="fi" data-ico="lock"></span><h3 data-i18n="f6_t">Optional encrypted sharing</h3><p data-i18n="f6_d">Help the C-LAB research network with an encrypted file, only if you choose. Spyware findings are never in a routine export.</p></div>
+    </div>
+
+    <div class="honesty">
+      <div class="hcol hcol-yes">
+        <h3 data-i18n="prot_h">What it finds</h3>
+        <ul class="list">
+          <li data-i18n="prot_1">Mercenary-spyware indicators on iPhone (Pegasus, Predator) via Amnesty's MVT, and commercial stalkerware on Android.</li>
+          <li data-i18n="prot_2">Accessibility services, notification listeners, device-admin apps, proxies, forced VPNs, risky certificates and profiles.</li>
+          <li data-i18n="prot_3">Stale security patches, verified boot, jailbreak / root, and a clear, prioritized list of fixes.</li>
+        </ul>
+      </div>
+      <div class="hcol hcol-no">
+        <h3 data-i18n="no_h">What it is not</h3>
+        <ul class="list">
+          <li data-i18n="no_1">Not a forensic tool. It is a fast triage; court-grade evidence needs a full acquisition.</li>
+          <li data-i18n="no_2">A clean result is NOT proof of safety. Advanced zero-click spyware may leave no USB-visible trace.</li>
+          <li data-i18n="no_3">Not a data collector. The temporary iPhone backup is deleted when done; your messages and photos are never uploaded.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="verify mono"><span data-ico="verify"></span> <span data-i18n="verify_note">Verify every download against its SHA-256 before opening. Checksums are published with each release.</span></p>
+  </section>
+</main>
+
+<footer class="foot">
+  <span class="brand"><span class="mark" data-ico="shield"></span> ARGUS</span>
+  <span class="sep">·</span>
+  <span data-i18n="foot_net">Part of the ARGUS Defense Network</span>
+  <span class="sep">·</span>
+  <a href="mailto:security@c-lab.tools">security@c-lab.tools</a>
+  <span class="sep">·</span>
+  <span class="coord mono">40°25′N · 03°41′W</span>
+</footer>
+
+<script src="icons.js"></script>
+<script src="node.js"></script>
+<script src="site.js"></script>
+</body>
+</html>

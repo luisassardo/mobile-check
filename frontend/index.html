@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>MobileCheck · self-assessment for your phone · C-LAB</title>
+<meta name="theme-color" content="#0b0f12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0f12'/%3E%3Cg fill='none' stroke='%235be3c3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6.5' y='7' width='19' height='12.5' rx='2'/%3E%3Cpath d='M10.5%2013.2%2013.2%2015.8%2019%209.4'/%3E%3Cpath d='M16%2019.5V22.4M12%2022.6H20'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="node.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-node="mobilecheck">
+
+<div class="bg" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-scan"></div>
+  <div class="bg-motes"></div>
+  <div class="bg-sweep"></div>
+</div>
+
+<span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br brr"></span>
+
+<header class="rail">
+  <div class="group">
+    <span class="brand"><span class="mark" data-ico="shield"></span> ARGUS</span>
+    <span class="crumb hide-narrow"><span class="sep">/</span> <a href="https://c-lab.tools/" rel="noopener" data-extlink>C-LAB</a> <span class="sep">/</span> <span class="sig">MOBILECHECK</span></span>
+  </div>
+  <div class="group">
+    <span class="hide-narrow mono-dim">READ-ONLY · LOCAL</span>
+    <span class="hide-narrow"><span id="clock">--:--:--</span> UTC</span>
+    <span class="langtog" data-lang-toggle>
+      <button type="button" data-set-lang="en" data-lang="en" class="on">EN</button>
+      <button type="button" data-set-lang="es" data-lang="es">ES</button>
+    </span>
+  </div>
+</header>
+
+<div class="wrap" role="main">
+
+  <!-- TAB BAR -->
+  <nav class="tabs" id="tabs">
+    <button type="button" class="tab on" data-tab="scan" data-en="Scan" data-es="Analizar">Scan</button>
+    <button type="button" class="tab" data-tab="report" data-en="Report" data-es="Informe" id="tab-report" disabled>Report</button>
+    <button type="button" class="tab" data-tab="history" data-en="History" data-es="Historial">History</button>
+  </nav>
+
+  <!-- ============ SCAN VIEW ============ -->
+  <section class="view on" data-view="scan">
+    <p class="eyebrow" data-en="C-LAB · phone self-assessment" data-es="C-LAB · autoevaluación del teléfono">C-LAB · phone self-assessment</p>
+    <h1 class="hero-h" data-en="Check your phone." data-es="Revisa tu teléfono.">Check your phone.</h1>
+    <p class="lead" data-en="Plug your phone into this computer with a USB cable and run a read-only security scan: spyware indicators, stalkerware, risky settings. It shows you, in plain language, what is solid and what to fix first. Nothing is sent anywhere unless you choose to." data-es="Conecta tu teléfono a esta computadora con un cable USB y ejecuta un análisis de seguridad de solo lectura: indicadores de spyware, stalkerware y configuraciones riesgosas. Te muestra, en lenguaje claro, qué está bien y qué corregir primero. No se envía nada a ningún lugar a menos que tú lo decidas.">Plug your phone into this computer with a USB cable and run a read-only security scan: spyware indicators, stalkerware, risky settings. It shows you, in plain language, what is solid and what to fix first. Nothing is sent anywhere unless you choose to.</p>
+
+    <div class="scan-card card">
+      <div class="device-panel" id="device-panel">
+        <div class="device-state" id="device-state">
+          <span data-ico="shield"></span>
+          <span id="device-label" data-en="Looking for your phone…" data-es="Buscando tu teléfono…">Looking for your phone…</span>
+        </div>
+        <div class="device-help hidden" id="android-help">
+          <b data-en="On your Android phone:" data-es="En tu teléfono Android:">On your Android phone:</b>
+          <ol>
+            <li data-en="Settings · About phone · tap 'Build number' 7 times to enable Developer options." data-es="Ajustes · Información del teléfono · toca 'Número de compilación' 7 veces para habilitar las opciones de desarrollador.">Settings · About phone · tap 'Build number' 7 times to enable Developer options.</li>
+            <li data-en="Settings · System · Developer options · enable 'USB debugging'." data-es="Ajustes · Sistema · Opciones de desarrollador · habilita 'Depuración USB'.">Settings · System · Developer options · enable 'USB debugging'.</li>
+            <li data-en="Connect with a USB DATA cable, then tap 'Allow' on the phone." data-es="Conecta con un cable USB de DATOS y toca 'Permitir' en el teléfono.">Connect with a USB DATA cable, then tap 'Allow' on the phone.</li>
+          </ol>
+          <p class="mono-dim small" data-en="When you finish: Developer options · 'Revoke USB debugging authorizations', then turn USB debugging off. The report reminds you." data-es="Al terminar: Opciones de desarrollador · 'Revocar autorizaciones de depuración USB' y apaga la depuración USB. El informe te lo recuerda.">When you finish: Developer options · 'Revoke USB debugging authorizations', then turn USB debugging off. The report reminds you.</p>
+        </div>
+        <div class="device-help hidden" id="ios-help">
+          <p data-en="iPhone detected. Unlock it and tap 'Trust' if asked. For the full spyware scan, MobileCheck makes a temporary encrypted backup, analyzes it with Amnesty's MVT against known spyware indicators, and deletes it right after." data-es="iPhone detectado. Desbloquéalo y toca 'Confiar' si te lo pide. Para el análisis completo de spyware, MobileCheck crea un respaldo cifrado temporal, lo analiza con MVT de Amnesty contra indicadores de spyware conocidos y lo elimina enseguida.">iPhone detected. Unlock it and tap 'Trust' if asked. For the full spyware scan, MobileCheck makes a temporary encrypted backup, analyzes it with Amnesty's MVT against known spyware indicators, and deletes it right after.</p>
+        </div>
+
+        <!-- iOS one-time toolchain consent + setup -->
+        <div class="ios-consent hidden" id="ios-consent">
+          <b data-en="One-time iOS setup" data-es="Configuración única de iOS">One-time iOS setup</b>
+          <p data-en="To analyze iPhones, MobileCheck installs Amnesty's open-source tools (pymobiledevice3 and MVT) into a private environment on THIS computer, and downloads the public spyware indicators. These are the only two times the app uses the network, both download-only. Nothing about you or your phone is sent." data-es="Para analizar iPhones, MobileCheck instala las herramientas de código abierto de Amnesty (pymobiledevice3 y MVT) en un entorno privado en ESTA computadora y descarga los indicadores públicos de spyware. Son las dos únicas veces que la app usa la red, solo para descargar. No se envía nada sobre ti ni tu teléfono.">To analyze iPhones, MobileCheck installs Amnesty's open-source tools (pymobiledevice3 and MVT) into a private environment on THIS computer, and downloads the public spyware indicators. These are the only two times the app uses the network, both download-only. Nothing about you or your phone is sent.</p>
+          <ul class="ios-endpoints mono-dim small">
+            <li>pypi.org: pymobiledevice3 + MVT (hash-pinned)</li>
+            <li>github.com/mvt-project: spyware indicators (IoCs)</li>
+          </ul>
+          <button type="button" id="ios-setup-btn" class="btn primary small">
+            <span data-ico="download"></span>
+            <span data-en="Set up iOS scanning" data-es="Configurar análisis de iOS">Set up iOS scanning</span>
+          </button>
+          <span class="mono-dim small" id="ios-setup-status"></span>
+        </div>
+
+        <!-- iOS scan-depth + IoC freshness, shown once the toolchain is ready -->
+        <div class="ios-ready hidden" id="ios-ready">
+          <div class="ios-mode">
+            <label><input type="radio" name="ios-mode" value="deep" checked>
+              <span data-en="Full scan: backup + spyware (MVT) analysis (15-30 min)" data-es="Análisis completo: respaldo + análisis de spyware (MVT) (15-30 min)">Full scan: backup + spyware (MVT) analysis (15-30 min)</span></label>
+            <label><input type="radio" name="ios-mode" value="quick">
+              <span data-en="Quick scan: settings and profiles only (2-3 min)" data-es="Análisis rápido: solo ajustes y perfiles (2-3 min)">Quick scan: settings and profiles only (2-3 min)</span></label>
+          </div>
+          <div class="ioc-badge mono-dim small" id="ioc-badge"></div>
+        </div>
+      </div>
+
+      <button type="button" id="scan-btn" class="btn primary big" disabled>
+        <span data-ico="shield"></span>
+        <span data-en="Scan my phone" data-es="Analizar mi teléfono">Scan my phone</span>
+      </button>
+      <p class="scan-note mono-dim" id="scan-status" data-en="Read-only. The scan runs over the cable; nothing is installed on the phone." data-es="Solo lectura. El análisis corre por el cable; no se instala nada en el teléfono.">Read-only. The scan runs over the cable; nothing is installed on the phone.</p>
+      <div class="progress hidden" id="progress"><div class="bar"></div></div>
+      <div class="scan-live hidden" id="scan-live">
+        <span class="mono-dim small" id="scan-stage"></span>
+        <button type="button" id="cancel-btn" class="btn bare small" data-en="Cancel" data-es="Cancelar">Cancel</button>
+      </div>
+      <p class="scan-note mono-dim hidden" id="nounplug" data-en="Do not unplug the iPhone during the scan." data-es="No desconectes el iPhone durante el análisis.">Do not unplug the iPhone during the scan.</p>
+    </div>
+
+    <details class="enroll">
+      <summary data-en="Organization code (optional)" data-es="Código de organización (opcional)">Organization code (optional)</summary>
+      <p class="mono-dim small" data-en="If your organization gave you a code, enter it so your reports can be grouped privately. It is stored on this device only." data-es="Si tu organización te dio un código, ingrésalo para que tus informes se agrupen de forma privada. Se guarda solo en este equipo.">If your organization gave you a code, enter it so your reports can be grouped privately. It is stored on this device only.</p>
+      <input type="text" id="org-code" class="inp" placeholder="e.g. ORG-1234" data-en-ph="e.g. ORG-1234" data-es-ph="ej. ORG-1234" autocomplete="off" spellcheck="false">
+    </details>
+
+    <div class="promise">
+      <div class="promise-item"><span data-ico="cloudOff"></span><div><b data-en="Local only" data-es="Solo local">Local only</b><p data-en="The scan runs here. No account, no upload, no telemetry." data-es="El análisis corre aquí. Sin cuenta, sin subida, sin telemetría.">The scan runs here. No account, no upload, no telemetry.</p></div></div>
+      <div class="promise-item"><span data-ico="lock"></span><div><b data-en="Encrypted history" data-es="Historial cifrado">Encrypted history</b><p data-en="Past scans are stored encrypted on this computer, with a key in the system keystore." data-es="Los análisis previos se guardan cifrados en este equipo, con una clave en el almacén del sistema.">Past scans are stored encrypted on this computer, with a key in the system keystore.</p></div></div>
+      <div class="promise-item"><span data-ico="fingerprint"></span><div><b data-en="Read-only" data-es="Solo lectura">Read-only</b><p data-en="It observes and reports. It never changes your settings." data-es="Observa e informa. Nunca cambia tu configuración.">It observes and reports. It never changes your settings.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ============ REPORT VIEW ============ -->
+  <section class="view" data-view="report">
+    <div id="report-empty" class="muted center" data-en="Run a scan to see your report." data-es="Ejecuta un análisis para ver tu informe.">Run a scan to see your report.</div>
+    <div id="report-body" class="hidden">
+      <div class="report-head">
+        <div class="score-ring" id="score-ring">
+          <div class="score-num"><span id="score-val">--</span><i>/100</i></div>
+        </div>
+        <div class="report-meta">
+          <h2 id="report-title" data-en="Your phone's health" data-es="Estado de tu teléfono">Your phone's health</h2>
+          <p class="mono-dim" id="report-sub">--</p>
+          <div class="chips" id="status-chips"></div>
+        </div>
+      </div>
+
+      <div class="report-actions">
+        <span class="mono-dim small" data-en="Download report:" data-es="Descargar informe:">Download report:</span>
+        <button type="button" class="btn bare small pdf-btn" data-pdf-lang="en"><span data-ico="download"></span> English</button>
+        <button type="button" class="btn bare small pdf-btn" data-pdf-lang="es"><span data-ico="download"></span> Español</button>
+        <button type="button" class="btn bare small pdf-btn" data-pdf-lang="de"><span data-ico="download"></span> Deutsch</button>
+        <span class="mono-dim small" id="pdf-status"></span>
+      </div>
+
+      <div class="urgent hidden" id="urgent-banner">
+        <span data-ico="shield"></span>
+        <div>
+          <b data-en="Something serious needs your attention" data-es="Algo serio requiere tu atención">Something serious needs your attention</b>
+          <p data-en="One or more critical issues were found. See the highlighted items below and act on them first." data-es="Se encontraron uno o más problemas críticos. Revisa los elementos resaltados abajo y atiéndelos primero.">One or more critical issues were found. See the highlighted items below and act on them first.</p>
+        </div>
+      </div>
+
+      <div class="ioc hidden" id="ioc-urgent">
+        <div class="ioc-top">
+          <span data-ico="shield"></span>
+          <div>
+            <b data-en="Possible spyware indicator found" data-es="Posible indicador de spyware encontrado">Possible spyware indicator found</b>
+            <p data-en="This is serious and rare. Do not factory-reset the device yet (it can destroy evidence). Keep it powered on and contact the Access Now Digital Security Helpline. You can also send an encrypted urgent report directly to C-LAB so the team can help you faster." data-es="Esto es serio y poco común. No restablezcas el dispositivo de fábrica todavía (puede destruir evidencia). Mantenlo encendido y contacta la Línea de Ayuda de Seguridad Digital de Access Now. También puedes enviar un informe urgente cifrado directamente a C-LAB para que el equipo te ayude más rápido.">This is serious and rare. Do not factory-reset the device yet (it can destroy evidence). Keep it powered on and contact the Access Now Digital Security Helpline. You can also send an encrypted urgent report directly to C-LAB so the team can help you faster.</p>
+            <a href="https://www.accessnow.org/help/" data-extlink class="ioc-link" data-en="Access Now Digital Security Helpline →" data-es="Línea de Ayuda de Seguridad Digital de Access Now →">Access Now Digital Security Helpline →</a>
+            <label class="consent">
+              <input type="checkbox" id="ioc-consent">
+              <span data-en="I understand this urgent report includes the spyware indicator detail, and I consent to send it encrypted to C-LAB." data-es="Entiendo que este informe urgente incluye el detalle del indicador de spyware, y consiento enviarlo cifrado a C-LAB.">I understand this urgent report includes the spyware indicator detail, and I consent to send it encrypted to C-LAB.</span>
+            </label>
+            <div class="export-actions">
+              <button type="button" id="ioc-send-btn" class="btn primary small" disabled>
+                <span data-ico="lock"></span>
+                <span data-en="Create urgent encrypted report" data-es="Crear informe urgente cifrado">Create urgent encrypted report</span>
+              </button>
+              <span class="mono-dim small" id="ioc-status"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sect" data-en="Fix these first" data-es="Corrige esto primero">Fix these first</h3>
+      <div id="top-fixes"></div>
+
+      <h3 class="sect" data-en="Everything we checked" data-es="Todo lo que revisamos">Everything we checked</h3>
+      <div id="all-findings"></div>
+
+      <div class="export card" id="export-panel">
+        <h3 class="export-title" data-en="Share with C-LAB (optional)" data-es="Compartir con C-LAB (opcional)">Share with C-LAB (optional)</h3>
+        <p class="mono-dim small" data-en="You can send an encrypted copy of this report to the C-LAB research network. It helps the team understand vulnerabilities across devices and give better guidance. Sending is your choice." data-es="Puedes enviar una copia cifrada de este informe a la red de investigación de C-LAB. Ayuda al equipo a entender las vulnerabilidades entre dispositivos y a dar mejor orientación. Enviarlo es tu decisión.">You can send an encrypted copy of this report to the C-LAB research network. It helps the team understand vulnerabilities across devices and give better guidance. Sending is your choice.</p>
+        <ul class="export-what">
+          <li><span data-en="Organization code" data-es="Código de organización">Organization code</span><b id="exp-org">·</b></li>
+          <li><span data-en="Device pseudonym" data-es="Seudónimo del dispositivo">Device pseudonym</span><b id="exp-pseudo">·</b></li>
+          <li><span data-en="Findings included" data-es="Hallazgos incluidos">Findings included</span><b id="exp-count">·</b></li>
+          <li class="exp-no"><span data-ico="cloudOff"></span><span data-en="Spyware / IoC findings are never included in this routine export." data-es="Los hallazgos de spyware / IoC nunca se incluyen en esta exportación de rutina.">Spyware / IoC findings are never included in this routine export.</span></li>
+          <li class="exp-no"><span data-ico="lock"></span><span data-en="The file is encrypted to C-LAB. Only C-LAB can open it. You choose how to send it." data-es="El archivo se cifra para C-LAB. Solo C-LAB puede abrirlo. Tú eliges cómo enviarlo.">The file is encrypted to C-LAB. Only C-LAB can open it. You choose how to send it.</span></li>
+        </ul>
+        <div class="export-actions">
+          <button type="button" id="export-btn" class="btn primary small">
+            <span data-ico="lock"></span>
+            <span data-en="Create encrypted file" data-es="Crear archivo cifrado">Create encrypted file</span>
+          </button>
+          <span class="mono-dim small" id="export-status"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HISTORY VIEW ============ -->
+  <section class="view" data-view="history">
+    <div class="history-head">
+      <h2 data-en="Your progress" data-es="Tu progreso">Your progress</h2>
+      <button type="button" id="wipe-btn" class="btn bare small" data-en="Wipe history" data-es="Borrar historial">Wipe history</button>
+    </div>
+    <div id="history-empty" class="muted center" data-en="No scans yet. Your history stays encrypted on this device." data-es="Aún no hay análisis. Tu historial permanece cifrado en este equipo.">No scans yet. Your history stays encrypted on this device.</div>
+
+    <div id="charts" class="charts hidden">
+      <div class="kpis" id="kpis"></div>
+      <div class="chart-card">
+        <div class="chart-head">
+          <span data-en="Security score over time" data-es="Puntuación de seguridad en el tiempo">Security score over time</span>
+          <span class="mono-dim small" id="score-range"></span>
+        </div>
+        <div id="chart-score" class="chart-svg"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-head">
+          <span data-en="Findings by status, per scan" data-es="Hallazgos por estado, por análisis">Findings by status, per scan</span>
+          <span class="chart-legend" id="status-legend"></span>
+        </div>
+        <div id="chart-status" class="chart-svg"></div>
+      </div>
+    </div>
+
+    <h3 class="sect hidden" id="history-list-head" data-en="All scans" data-es="Todos los análisis">All scans</h3>
+    <div id="history-list"></div>
+  </section>
+
+</div>
+
+<footer class="foot mono-dim">
+  <span>MobileCheck · <span id="ver">v0.1.0</span></span>
+  <span class="sep">·</span>
+  <span data-en="Part of the ARGUS network" data-es="Parte de la red ARGUS">Part of the ARGUS network</span>
+  <span class="sep">·</span>
+  <span class="coord">40°25′N · 03°41′W</span>
+</footer>
+
+<script src="icons.js"></script>
+<script src="node.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

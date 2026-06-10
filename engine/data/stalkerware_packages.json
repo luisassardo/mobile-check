@@ -1,0 +1,24 @@
+{
+  "_comment": "Substring hints matched (lowercase) against installed package names. Illustrative, NOT exhaustive. Authoritative sources: Coalition Against Stalkerware and Echap public lists. Keep updated; staleness here means missed detections, never false alarms.",
+  "_source": "ported from android-triage.command STALKER_HINTS, 2026-06",
+  "hints": [
+    "cerberus",
+    "systemservice",
+    "thetruthspy",
+    "flexispy",
+    "mspy",
+    "spyhuman",
+    "hellospy",
+    "spyzie",
+    "umobix",
+    "mobilespy",
+    "spy24",
+    "ikeymonitor",
+    "hoverwatch",
+    "xnspy",
+    "clevguard",
+    "kidsguard",
+    "spapp",
+    "trackview"
+  ]
+}

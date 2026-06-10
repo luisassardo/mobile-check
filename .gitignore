@@ -1,0 +1,42 @@
+# dependencies
+node_modules/
+
+# rust / tauri build output
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# bundled engine (built by scripts/build-engine.sh)
+src-tauri/engine-dist/
+
+# pyinstaller
+build/
+dist/
+*.spec
+
+# python caches
+__pycache__/
+*.pyc
+
+# age private keys (never commit)
+dev-age-identity.txt
+*-identity.txt
+*.secret
+
+# os
+.DS_Store
+
+# ingest output (contains decrypted data)
+ingest/dashboard.html
+ingest/_preview-dashboard.html
+ingest/cc.db
+ingest/cc.db-journal
+ingest/inbox/*
+!ingest/inbox/.gitkeep
+!ingest/inbox/README.txt
+
+# bundled adb binaries (fetched by scripts/fetch-platform-tools.sh;
+# pins live in scripts/platform-tools.sha256, which IS committed)
+src-tauri/resources/adb/
+
+# bundled python runtimes (fetched by scripts/fetch-python-runtime.sh)
+src-tauri/resources/python/

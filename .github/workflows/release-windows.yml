@@ -1,0 +1,129 @@
+name: Release (Windows)
+
+# Builds the Windows MobileCheck app: bundles the engine as a .exe, builds the
+# Tauri NSIS + MSI installers, optionally Authenticode-signs them, and uploads.
+#
+# Required repo secrets for signing (optional — without them the build still runs
+# and produces UNSIGNED installers that hit SmartScreen):
+#   WINDOWS_CERTIFICATE           base64 of your code-signing .pfx
+#   WINDOWS_CERTIFICATE_PASSWORD  the .pfx password
+#
+# Trigger: a version tag push (v*) or manually from the Actions tab.
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install engine build deps
+        run: pip install pyinstaller fpdf2
+
+      - name: Fetch bundled binaries (adb + Python runtime)
+        shell: pwsh
+        run: |
+          # adb (Android, Apache-2.0): the Windows binaries the app bundles.
+          New-Item -ItemType Directory -Force src-tauri/resources/adb/windows | Out-Null
+          Invoke-WebRequest "https://dl.google.com/android/repository/platform-tools-latest-windows.zip" -OutFile pt.zip
+          Expand-Archive pt.zip -DestinationPath pt -Force
+          Copy-Item pt/platform-tools/adb.exe, pt/platform-tools/AdbWinApi.dll, pt/platform-tools/AdbWinUsbApi.dll src-tauri/resources/adb/windows/
+          Copy-Item pt/platform-tools/NOTICE.txt src-tauri/resources/adb/NOTICE.txt -Force
+          # Relocatable CPython for the iOS toolchain venv (python-build-standalone).
+          New-Item -ItemType Directory -Force src-tauri/resources/python | Out-Null
+          $rel = "20251217"; $pv = "3.12.12"
+          Invoke-WebRequest "https://github.com/astral-sh/python-build-standalone/releases/download/$rel/cpython-$pv+$rel-x86_64-pc-windows-msvc-install_only_stripped.tar.gz" -OutFile src-tauri/resources/python/windows-x86_64.tar.gz
+
+      - name: Build engine (.exe)
+        run: powershell -ExecutionPolicy Bypass -File scripts/build-engine.ps1
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install npm deps
+        run: npm install
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> target"
+
+      - name: Build Tauri app (NSIS + MSI)
+        run: npm run tauri build -- --config src-tauri/tauri.release.conf.json
+
+      - name: Sign installers (if a certificate secret is present)
+        if: ${{ env.WINDOWS_CERTIFICATE != '' }}
+        env:
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        shell: pwsh
+        run: |
+          $pfx = "$env:RUNNER_TEMP\clab-cert.pfx"
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE))
+          # signtool ships with the Windows SDK on the runner.
+          $signtool = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe" |
+                       Sort-Object FullName -Descending | Select-Object -First 1).FullName
+          $targets = Get-ChildItem -Recurse `
+            src-tauri/target/release/bundle/nsis/*.exe,
+            src-tauri/target/release/bundle/msi/*.msi -ErrorAction SilentlyContinue
+          foreach ($t in $targets) {
+            & $signtool sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 `
+              /f $pfx /p $env:WINDOWS_CERTIFICATE_PASSWORD $t.FullName
+          }
+          Remove-Item $pfx -Force
+
+      - name: Compute checksums
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Recurse `
+            src-tauri/target/release/bundle/nsis/*.exe,
+            src-tauri/target/release/bundle/msi/*.msi -ErrorAction SilentlyContinue
+          $files | Get-FileHash -Algorithm SHA256 |
+            ForEach-Object { "{0}  {1}" -f $_.Hash, (Split-Path $_.Path -Leaf) } |
+            Out-File SHA256SUMS-windows.txt -Encoding utf8
+          Get-Content SHA256SUMS-windows.txt
+
+      - name: Upload installers (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: MobileCheck-Windows
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+            SHA256SUMS-windows.txt
+
+      - name: Publish to GitHub Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $nsis = Get-ChildItem -Recurse src-tauri/target/release/bundle/nsis/*.exe | Select-Object -First 1
+          # stable name the landing button links to
+          Copy-Item $nsis.FullName MobileCheck-Windows-Setup.exe -Force
+          $assets = @("MobileCheck-Windows-Setup.exe", "SHA256SUMS-windows.txt")
+          $tag = $env:GITHUB_REF_NAME
+          gh release view $tag 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $assets --clobber
+          } else {
+            gh release create $tag --title "MobileCheck $tag" `
+              --notes "macOS (Apple-notarized) + Windows installers. Verify against SHA256SUMS before opening." $assets
+          }
