@@ -125,5 +125,5 @@ jobs:
             gh release upload $tag $assets --clobber
           } else {
             gh release create $tag --title "MobileCheck $tag" `
-              --notes "macOS (Apple-notarized) + Windows installers. Verify against SHA256SUMS before opening." $assets
+              --notes "MobileCheck $tag — early build for device testing, not yet validated on real hardware. Windows installer attached here; the macOS DMG is published separately via the notarized release script (scripts/release-macos.sh). Verify against SHA256SUMS before opening." $assets
           }
