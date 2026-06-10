@@ -1,0 +1,20 @@
+{
+  "_comment": "Relocatable CPython (python-build-standalone, PSF) downloaded at first iOS-toolchain setup to build the MVT venv. NOT bundled in the app: Apple's notary inspects inside tarballs and would reject CPython's unsigned Mach-O binaries. Download-only, hash-verified, user-consented (same model as the MVT/IoC fetch). Keep release/pyver in sync with scripts/fetch-python-runtime.sh.",
+  "release": "20260602",
+  "pyver": "3.12.13",
+  "base_url": "https://github.com/astral-sh/python-build-standalone/releases/download/20260602",
+  "targets": {
+    "macos-aarch64": {
+      "asset": "cpython-3.12.13+20260602-aarch64-apple-darwin-install_only_stripped.tar.gz",
+      "sha256": "7426b06a7ba06e2db637ace3a6658db55d357c6c2083d5b13e0d46a293a3d5ad"
+    },
+    "macos-x86_64": {
+      "asset": "cpython-3.12.13+20260602-x86_64-apple-darwin-install_only_stripped.tar.gz",
+      "sha256": "ed741cca5783263844e051cedbb9e0728a8e8c0a903038ac910a2664c36e532a"
+    },
+    "windows-x86_64": {
+      "asset": "cpython-3.12.13+20260602-x86_64-pc-windows-msvc-install_only_stripped.tar.gz",
+      "sha256": "dbada31f91a4fff934dae85e7998d91f1e926135bd88ffed4921a337d5680f48"
+    }
+  }
+}

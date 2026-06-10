@@ -23,6 +23,7 @@ Resolution order for the iOS CLIs (pymobiledevice3, mvt-ios):
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import platform
@@ -31,6 +32,7 @@ import subprocess
 import sys
 import tarfile
 import time
+import urllib.request
 from pathlib import Path
 
 from .core import run_cmd
@@ -140,21 +142,89 @@ def status() -> dict:
 
 # --- Bootstrap -------------------------------------------------------------------
 
-def _bundled_python_tarball() -> Path | None:
-    """The python-build-standalone tarball bundled in app resources, per arch."""
-    res = os.environ.get("MC_RESOURCES", "").strip()
-    if not res:
-        return None
+def _runtime_target_key() -> str | None:
+    """Map the current platform to a python-runtime.json target key."""
     system = platform.system()
     arch = platform.machine().lower()
     if system == "Darwin":
-        name = "macos-aarch64.tar.gz" if arch in ("arm64", "aarch64") else "macos-x86_64.tar.gz"
-    elif system == "Windows":
-        name = "windows-x86_64.tar.gz"
-    else:
+        return "macos-aarch64" if arch in ("arm64", "aarch64") else "macos-x86_64"
+    if system == "Windows":
+        return "windows-x86_64"
+    return None
+
+
+def _bundled_python_tarball() -> Path | None:
+    """An optionally pre-bundled python-build-standalone tarball in app resources.
+
+    Not used by the notarized release (Apple's notary inspects inside tarballs
+    and rejects CPython's unsigned Mach-O), but kept as a first choice for
+    offline/custom builds that pre-bundle a signed or otherwise trusted runtime.
+    """
+    res = os.environ.get("MC_RESOURCES", "").strip()
+    if not res:
         return None
-    p = Path(res) / "python" / name
+    key = _runtime_target_key()
+    if not key:
+        return None
+    p = Path(res) / "python" / f"{key}.tar.gz"
     return p if p.exists() else None
+
+
+def _runtime_spec() -> dict | None:
+    """Read engine/data/python-runtime.json -> {url, sha256} for this platform."""
+    if getattr(sys, "frozen", False):
+        base = Path(getattr(sys, "_MEIPASS", "."))
+        data_path = base / "engine" / "data" / "python-runtime.json"
+    else:
+        data_path = Path(__file__).resolve().parent / "data" / "python-runtime.json"
+    try:
+        data = json.loads(data_path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    key = _runtime_target_key()
+    target = (data.get("targets") or {}).get(key or "")
+    if not target:
+        return None
+    return {
+        "url": f"{data['base_url']}/{target['asset']}",
+        "sha256": target["sha256"],
+        "asset": target["asset"],
+    }
+
+
+def _download_python_runtime() -> Path | None:
+    """Download the hash-pinned CPython tarball into app data, verify, return it.
+
+    This is the second of the consent-gated, download-only network calls (the
+    others are pip install + IoC refresh). Nothing about the user is sent.
+    """
+    spec = _runtime_spec()
+    if not spec:
+        return None
+    dest_dir = toolchain_dir()
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest = dest_dir / spec["asset"]
+    if dest.exists() and _sha256(dest) == spec["sha256"]:
+        return dest
+    progress("toolchain", 5, "Downloading the Python runtime…",
+             "Descargando el entorno de Python…", "Python-Laufzeit wird heruntergeladen…")
+    tmp = dest.with_suffix(dest.suffix + ".part")
+    with urllib.request.urlopen(spec["url"], timeout=120) as r, open(tmp, "wb") as f:
+        shutil.copyfileobj(r, f)
+    got = _sha256(tmp)
+    if got != spec["sha256"]:
+        tmp.unlink(missing_ok=True)
+        raise RuntimeError(f"python runtime hash mismatch: expected {spec['sha256']}, got {got}")
+    tmp.replace(dest)
+    return dest
+
+
+def _sha256(p: Path) -> str:
+    h = hashlib.sha256()
+    with open(p, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def _base_python() -> str:
@@ -174,9 +244,12 @@ def _base_python() -> str:
         if c.exists():
             return str(c)
 
-    tarball = _bundled_python_tarball()
+    # Obtain a relocatable runtime: a pre-bundled tarball if present (offline
+    # builds), otherwise download the hash-pinned one. The release does NOT
+    # bundle it (Apple's notary rejects unsigned Mach-O inside bundled tarballs).
+    tarball = _bundled_python_tarball() or _download_python_runtime()
     if tarball:
-        progress("toolchain", 10, "Unpacking the Python runtime…",
+        progress("toolchain", 12, "Unpacking the Python runtime…",
                  "Desempacando el entorno de Python…", "Python-Laufzeit wird entpackt…")
         toolchain_dir().mkdir(parents=True, exist_ok=True)
         with tarfile.open(tarball) as tf:
@@ -196,7 +269,7 @@ def _base_python() -> str:
     sys3 = shutil.which("python3") or shutil.which("python")
     if sys3:
         return sys3
-    raise RuntimeError("no bundled Python runtime and no system python3 found")
+    raise RuntimeError("could not obtain a Python runtime (download failed and no system python3 found)")
 
 
 def lockfile_path() -> Path:

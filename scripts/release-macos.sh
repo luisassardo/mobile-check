@@ -38,10 +38,10 @@ rustup target add x86_64-apple-darwin aarch64-apple-darwin >/dev/null 2>&1 || tr
 
 export MAC_SIGN_IDENTITY="Developer ID Application: Luis Assardo (${APPLE_TEAM_ID})"
 
-# 0. Fetch the bundled binaries if missing (hash-pinned). adb (Android) and the
-#    relocatable Python runtimes (iOS toolchain) ship in the app's resources.
+# 0. Fetch the bundled adb if missing (hash-pinned, Apache-2.0). The Python
+#    runtime is NOT bundled — it is downloaded (hash-verified) at first iOS setup,
+#    because Apple's notary rejects the unsigned Mach-O inside a bundled CPython.
 [ -x "src-tauri/resources/adb/macos/adb" ] || bash scripts/fetch-platform-tools.sh
-[ -f "src-tauri/resources/python/macos-aarch64.tar.gz" ] || bash scripts/fetch-python-runtime.sh
 
 # 1. Build the self-contained engine binary, signed for notarization (the engine
 #    is its own executable inside the .app, so it must be Developer-ID signed with

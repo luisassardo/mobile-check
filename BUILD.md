@@ -58,9 +58,18 @@ engine as `--device-pseudonym`.
 ## iOS toolchain (Phase 2+, design)
 
 MVT and pymobiledevice3 are NOT compiled into the sidecar (licenses: GPL-3 /
-MVT-1.1; C-extension deps break universal2). Instead the app bundles a
-relocatable CPython per arch plus a hash-pinned lockfile
-(`engine/data/ios-requirements.lock`) and, on first iOS scan with explicit
-consent, creates an app-managed venv: `pip install --require-hashes`, then
-`mvt-ios download-iocs`. The only two network calls in the product, both
-download-only and user-initiated.
+MVT-1.1; C-extension deps break universal2). On first iOS scan, with explicit
+consent, the app builds an app-managed venv and installs them
+(`pip install --require-hashes -r engine/data/ios-requirements.lock`), then
+`mvt-ios download-iocs`.
+
+The relocatable CPython that builds that venv is **downloaded at first iOS
+setup, not bundled** — Apple's notary inspects inside bundled `.tar.gz` files
+and rejects CPython's unsigned Mach-O (`python3.12`, the `.dylib`/`.so`), so a
+bundled runtime makes the whole .app un-notarizable. The download is
+hash-verified against `engine/data/python-runtime.json` (keep it in sync with
+`scripts/fetch-python-runtime.sh`). So the product makes three network calls,
+all download-only, hash-verified, and consent-gated: the Python runtime, the
+pip install, and the IoC refresh. `_bundled_python_tarball()` still takes
+precedence if a runtime is pre-placed under `resources/python/` for an offline
+build, but the notarized release ships none.

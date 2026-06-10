@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "bundle": {
-    "resources": ["engine-dist/*", "resources/adb/**/*", "resources/python/*"]
+    "resources": ["engine-dist/*", "resources/adb/**/*"]
   }
 }
