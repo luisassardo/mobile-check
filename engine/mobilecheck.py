@@ -27,13 +27,34 @@ Design notes:
 from __future__ import annotations
 
 import argparse
+import hashlib
+import hmac
 import json
+import os
 import signal
 import sys
 import time
 
 from . import __version__
 from . import adb as adb_mod
+
+
+def _device_pseudonym(hardware_id: str, fallback: str = "") -> str:
+    """Stable per-phone pseudonym = HMAC-SHA256(install key, hardware id)[:16].
+
+    The install key (random per install, in the OS keychain) is supplied by the
+    Rust shell via MC_PSEUDONYM_KEY. Computed here because only the engine knows
+    the real hardware id: the iPhone's UDID (from lockdownd) or the Android USB
+    serial. Same key + same phone => same pseudonym; different phones => different
+    pseudonyms; not reversible to the hardware id; unlinkable across installs.
+
+    Matches the Rust HMAC (key used as its ASCII-hex bytes), so a value computed
+    on either side agrees. Falls back to `fallback` when the key or id is absent.
+    """
+    key = os.environ.get("MC_PSEUDONYM_KEY", "")
+    if not key or not hardware_id:
+        return fallback
+    return hmac.new(key.encode(), hardware_id.encode(), hashlib.sha256).hexdigest()[:16]
 from . import device_detect
 from .core import ScanContext, Scanner, summarize
 from .progress import progress
@@ -124,7 +145,7 @@ def scan_android(args: argparse.Namespace) -> int:
         device_label=args.device_label or label,
         app_mode="self-check",
         org_code=args.org_code,
-        device_pseudonym=args.device_pseudonym,
+        device_pseudonym=_device_pseudonym(serial, fallback=args.device_pseudonym),
         target_serial=serial,
     )
 
@@ -178,7 +199,7 @@ def scan_ios(args: argparse.Namespace) -> int:
         device_label=args.device_label or phone.name or "iPhone",
         app_mode="self-check",
         org_code=args.org_code,
-        device_pseudonym=args.device_pseudonym,
+        device_pseudonym=_device_pseudonym(phone.udid, fallback=args.device_pseudonym),
         target_serial=phone.udid,
     )
 

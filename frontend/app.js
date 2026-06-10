@@ -55,15 +55,18 @@
     return "" + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate());
   }
   // Collision-safe stem for the .age exports you collect: org code + date +
-  // first 8 of the random device pseudonym. So two same-day files from different
-  // devices never share a name. Aggregation still keys on the payload, not this.
+  // first 8 of the per-phone pseudonym + the scan id. Different phones differ by
+  // pseudonym; repeat scans of the same phone (even same day) differ by scan id.
+  // Aggregation still keys on the payload, not this.
   function exportStem() {
     const s = (lastPayload && lastPayload.scan) || {};
     const org = String(s.org_code || "").toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 16);
     const pseudo = String(s.device_pseudonym || "").replace(/[^a-zA-Z0-9]/g, "").slice(0, 8) || "device";
+    const scanId = String(s.id || "").replace(/[^a-zA-Z0-9]/g, "").slice(0, 8);
     const parts = ["MobileCheck"];
     if (org) parts.push(org);
     parts.push(scanYmd(), pseudo);
+    if (scanId) parts.push(scanId);
     return parts.join("-");
   }
 

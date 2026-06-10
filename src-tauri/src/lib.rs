@@ -396,7 +396,11 @@ async fn run_scan(
     ios_mode: Option<String>,
     backup_password: Option<String>,
 ) -> Result<String, String> {
+    // Fallback pseudonym from the serial we have now (real for Android, empty
+    // for iOS). The engine recomputes from the REAL hardware id (iOS UDID /
+    // Android serial) using the same key, so every phone gets a distinct one.
     let pseudonym = phone_pseudonym(&serial)?;
+    let pseudo_key = secret_get_or_create(PHONE_HMAC_ENTRY, || random_hex(32))?;
     let mut args: Vec<String> = vec![
         "--platform".into(), platform,
         "--device-pseudonym".into(), pseudonym,
@@ -417,7 +421,7 @@ async fn run_scan(
             args.push(org);
         }
     }
-    let mut env: Vec<(&str, String)> = Vec::new();
+    let mut env: Vec<(&str, String)> = vec![("MC_PSEUDONYM_KEY", pseudo_key)];
     if let Some(pw) = backup_password {
         if !pw.is_empty() {
             env.push(("MC_BACKUP_PASSWORD", pw));
