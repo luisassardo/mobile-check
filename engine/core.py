@@ -117,7 +117,7 @@ class ScanContext:
 
     For remote-target scans (iOS via Mac host): os_name/os_version/arch describe
     the iPhone being audited, and host_info records the auditing Mac separately
-    (e.g. "macOS 26.5 arm64 NSA01").
+    (e.g. "macOS 26.5 arm64 my-mac").
     """
     scan_id: str
     started_at: float
