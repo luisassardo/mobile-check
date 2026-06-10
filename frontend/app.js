@@ -85,6 +85,7 @@
   let device = null;     // {platform: "android"|"ios", serial, label, ready}
   let scanning = false;
   let detectTimer = null;
+  let detectInFlight = false;   // guard: never overlap detect_device calls
   let iosToolchain = null;   // cached status() result
   let iosToolchainChecked = false;
 
@@ -134,11 +135,13 @@
   }
 
   async function pollDevice() {
-    if (!TAURI || scanning) return;
+    if (!TAURI || scanning || detectInFlight) return;
     const es = document.documentElement.lang === "es";
     let det;
+    detectInFlight = true;
     try { det = JSON.parse(await TAURI.invoke("detect_device")); }
     catch (e) { console.warn("detect_device failed", e); return; }
+    finally { detectInFlight = false; }
 
     const a = det.android || {};
     const i = det.ios || {};

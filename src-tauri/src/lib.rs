@@ -369,7 +369,7 @@ fn run_engine_pdf(app: &tauri::AppHandle, payload: &str, lang: &str, dest: &str)
 
 // Quick poll: which phone is plugged in? Returns the engine's detection JSON.
 #[tauri::command]
-fn detect_device(app: tauri::AppHandle) -> Result<String, String> {
+async fn detect_device(app: tauri::AppHandle) -> Result<String, String> {
     let output = engine_command(&app, &["--detect".to_string()])?
         .output()
         .map_err(|e| format!("failed to launch engine: {e}"))?;
@@ -387,7 +387,7 @@ fn detect_device(app: tauri::AppHandle) -> Result<String, String> {
 // `backup_password` (iOS deep scans only) travels to the engine via env var,
 // never argv, and is not logged.
 #[tauri::command]
-fn run_scan(
+async fn run_scan(
     app: tauri::AppHandle,
     state: tauri::State<'_, ScanState>,
     platform: String,
@@ -429,7 +429,7 @@ fn run_scan(
 // iOS toolchain management. Status is quick and silent; install streams its
 // progress to `toolchain://progress` (pip download can take minutes).
 #[tauri::command]
-fn ios_toolchain_status(app: tauri::AppHandle) -> Result<String, String> {
+async fn ios_toolchain_status(app: tauri::AppHandle) -> Result<String, String> {
     let output = engine_command(&app, &["--toolchain".into(), "status".into()])?
         .output()
         .map_err(|e| format!("failed to launch engine: {e}"))?;
@@ -437,7 +437,7 @@ fn ios_toolchain_status(app: tauri::AppHandle) -> Result<String, String> {
 }
 
 #[tauri::command]
-fn ios_toolchain_install(
+async fn ios_toolchain_install(
     app: tauri::AppHandle,
     state: tauri::State<'_, ScanState>,
     wheelhouse: Option<String>,
@@ -453,7 +453,7 @@ fn ios_toolchain_install(
 }
 
 #[tauri::command]
-fn refresh_iocs(
+async fn refresh_iocs(
     app: tauri::AppHandle,
     state: tauri::State<'_, ScanState>,
 ) -> Result<String, String> {
@@ -521,7 +521,7 @@ fn history_wipe(app: tauri::AppHandle) -> Result<(), String> {
 // Generate a PDF report from a scan payload, written to a path the user picked
 // via the save dialog. On request only; PDFs are never automatic.
 #[tauri::command]
-fn export_pdf(app: tauri::AppHandle, payload: String, lang: Option<String>, dest: String) -> Result<(), String> {
+async fn export_pdf(app: tauri::AppHandle, payload: String, lang: Option<String>, dest: String) -> Result<(), String> {
     let lang = lang.unwrap_or_else(|| "en".to_string());
     let lang = if lang == "en" || lang == "de" || lang == "es" { lang } else { "en".to_string() };
     run_engine_pdf(&app, &payload, &lang, &dest)

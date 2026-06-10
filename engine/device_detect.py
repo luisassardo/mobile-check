@@ -40,13 +40,21 @@ def detect_android() -> dict:
 
 
 def detect_ios_usb() -> dict:
-    """Presence-only iPhone/iPad detection at the USB layer."""
+    """Presence-only iPhone/iPad detection at the USB layer (no toolchain needed)."""
     system = platform.system()
     if system == "Darwin":
-        r = run_cmd(["system_profiler", "SPUSBDataType", "-json"], timeout=20)
-        if r.ok:
+        # ioreg is fast (<1s) and stable. An attached iPhone/iPad/iPod exposes
+        # its USB product name ("iPhone"/"iPad"/"iPod") here regardless of trust.
+        r = run_cmd(["ioreg", "-p", "IOUSB", "-l", "-w", "0"], timeout=10)
+        if r.ok and r.stdout:
+            for model in ("iPhone", "iPad", "iPod"):
+                if f'"{model}"' in r.stdout:
+                    return {"present": True, "name": model, "source": "usb"}
+        # Fallback: system_profiler (slower) with a correct vendor-id parse.
+        r2 = run_cmd(["system_profiler", "SPUSBDataType", "-json"], timeout=15)
+        if r2.ok:
             try:
-                data = json.loads(r.stdout)
+                data = json.loads(r2.stdout)
             except json.JSONDecodeError:
                 data = {}
             name = _find_apple_mobile_mac(data.get("SPUSBDataType", []))
@@ -65,11 +73,18 @@ def detect_ios_usb() -> dict:
 
 
 def _find_apple_mobile_mac(items: list) -> str:
-    """Recursively walk system_profiler USB tree looking for an iPhone/iPad."""
+    """Recursively walk system_profiler USB tree looking for an iPhone/iPad.
+
+    macOS reports Apple's vendor as the alias "apple_vendor_id" (not the raw
+    "0x05ac"), so accept either, and also match on the product name alone since
+    the name is what carries "iPhone"/"iPad"/"iPod".
+    """
     for item in items:
         name = str(item.get("_name", ""))
-        vendor = str(item.get("vendor_id", ""))
-        if APPLE_USB_VENDOR in vendor and any(k in name for k in ("iPhone", "iPad", "iPod")):
+        vendor = str(item.get("vendor_id", "")).lower()
+        looks_apple = APPLE_USB_VENDOR in vendor or "apple" in vendor
+        is_mobile = any(k in name for k in ("iPhone", "iPad", "iPod"))
+        if is_mobile and (looks_apple or vendor == ""):
             return name
         child = _find_apple_mobile_mac(item.get("_items", []))
         if child:
