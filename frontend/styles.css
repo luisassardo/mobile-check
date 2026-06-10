@@ -87,6 +87,10 @@
 .ios-mode label{display:flex;gap:8px;align-items:flex-start;cursor:pointer;}
 .ioc-badge a{color:var(--accent);text-decoration:none;}
 .ioc-badge a:hover{text-decoration:underline;}
+.ios-backup-pw{display:flex;flex-direction:column;gap:6px;}
+.ios-backup-pw label{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2,#cdd5dd);}
+.ios-backup-pw .inp{margin-bottom:0;}
+.ios-backup-pw p{margin:2px 0 0;}
 
 .enroll{margin:0 0 26px;border:1px solid var(--line,#222b33);border-radius:8px;padding:0 16px;background:var(--bg-2,#12181d);}
 .enroll summary{cursor:pointer;padding:14px 0;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2,#cdd5dd);}

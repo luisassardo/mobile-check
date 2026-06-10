@@ -213,6 +213,16 @@
     return checked ? checked.value : "deep";
   }
 
+  // Show the backup-password field only for the deep iOS scan. (WKWebView does
+  // not support window.prompt — it returns null — so the password is collected
+  // with an in-app field, never a JS prompt.)
+  const backupPwRow = $("#ios-backup-pw-row");
+  function syncBackupPwRow() {
+    if (backupPwRow) backupPwRow.classList.toggle("hidden", selectedIosMode() !== "deep");
+  }
+  $$('input[name="ios-mode"]').forEach((r) => r.addEventListener("change", syncBackupPwRow));
+  syncBackupPwRow();
+
   function startDevicePolling() {
     if (detectTimer) return;
     pollDevice();
@@ -248,10 +258,15 @@
     if (device.platform === "ios") {
       iosMode = selectedIosMode();
       if (iosMode === "deep") {
-        backupPassword = window.prompt(es
-          ? "Para el análisis de spyware se necesita una contraseña de respaldo cifrado.\n\nSi tu iPhone YA tiene una contraseña de respaldo, ingrésala. Si no, escribe una temporal: MobileCheck la usará para este análisis y la quitará al terminar."
-          : "The spyware scan needs an encrypted-backup password.\n\nIf your iPhone ALREADY has a backup password, enter it. Otherwise type a temporary one: MobileCheck uses it for this scan and removes it afterwards.");
-        if (!backupPassword) { scanStatus.textContent = es ? "Análisis cancelado." : "Scan cancelled."; return; }
+        const pwField = $("#ios-backup-pw");
+        backupPassword = pwField ? pwField.value.trim() : "";
+        if (!backupPassword) {
+          scanStatus.textContent = es
+            ? "Escribe una contraseña de respaldo arriba para el análisis completo (o elige el análisis rápido)."
+            : "Enter a backup password above for the full scan (or choose the quick scan).";
+          if (pwField) pwField.focus();
+          return;
+        }
       }
     }
 
@@ -291,6 +306,8 @@
       scanLive.classList.add("hidden");
       noUnplug.classList.add("hidden");
       scanStage.textContent = "";
+      const pwField = $("#ios-backup-pw");   // don't leave the password in the DOM
+      if (pwField) pwField.value = "";
       startDevicePolling();
     }
   });
