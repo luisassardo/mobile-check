@@ -17,8 +17,8 @@ RES="$ROOT/src-tauri/resources/python"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-RELEASE="20251217"
-PYVER="3.12.12"
+RELEASE="20260602"
+PYVER="3.12.13"
 BASE="https://github.com/astral-sh/python-build-standalone/releases/download/${RELEASE}"
 
 # target-triple -> bundled filename

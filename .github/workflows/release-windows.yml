@@ -43,7 +43,7 @@ jobs:
           Copy-Item pt/platform-tools/NOTICE.txt src-tauri/resources/adb/NOTICE.txt -Force
           # Relocatable CPython for the iOS toolchain venv (python-build-standalone).
           New-Item -ItemType Directory -Force src-tauri/resources/python | Out-Null
-          $rel = "20251217"; $pv = "3.12.12"
+          $rel = "20260602"; $pv = "3.12.13"
           Invoke-WebRequest "https://github.com/astral-sh/python-build-standalone/releases/download/$rel/cpython-$pv+$rel-x86_64-pc-windows-msvc-install_only_stripped.tar.gz" -OutFile src-tauri/resources/python/windows-x86_64.tar.gz
 
       - name: Build engine (.exe)
